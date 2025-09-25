@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# QR Code Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Una aplicación moderna para generar códigos QR personalizables con soporte para múltiples tipos de contenido.
 
-Currently, two official plugins are available:
+## Características
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Generación de códigos QR para diferentes tipos de contenido:
+  - URLs
+  - Texto plano
+  - Tarjetas de contacto (vCard)
+  - Redes WiFi
+  - Correos electrónicos
+  - Mensajes de texto (SMS)
+  - Ubicaciones geográficas
+- Personalización avanzada:
+  - Colores personalizables (fondo y primer plano)
+  - Diferentes estilos de puntos
+  - Inclusión de logo
+  - Tamaño ajustable
+- Interfaz de usuario intuitiva y responsiva
+- Modo oscuro
+- Vista previa en tiempo real
+- Descarga en múltiples formatos (PNG, JPEG, SVG, WebP)
 
-## React Compiler
+## Tecnologías utilizadas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- [React](https://reactjs.org/) - Biblioteca de JavaScript para construir interfaces de usuario
+- [TypeScript](https://www.typescriptlang.org/) - JavaScript tipado para mayor robustez
+- [Vite](https://vitejs.dev/) - Herramienta de construcción y desarrollo
+- [Tailwind CSS](https://tailwindcss.com/) - Framework de utilidades CSS
+- [react-qr-code](https://www.npmjs.com/package/react-qr-code) - Generación de códigos QR
+- [react-icons](https://react-icons.github.io/react-icons/) - Iconos populares en forma de componentes React
 
-## Expanding the ESLint configuration
+## Instalación
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+1. Clona el repositorio:
+   ```bash
+   git clone https://github.com/tuusuario/qr-generator.git
+   cd qr-generator
+   ```
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. Instala las dependencias:
+   ```bash
+   npm install
+   # o
+   yarn
+   ```
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+3. Inicia el servidor de desarrollo:
+   ```bash
+   npm run dev
+   # o
+   yarn dev
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Uso
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. Selecciona el tipo de código QR que deseas generar
+2. Completa los campos del formulario según el tipo seleccionado
+3. Personaliza la apariencia usando el panel de personalización
+4. Descarga tu código QR en el formato que prefieras
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Construcción para producción
+
+Para crear una versión optimizada para producción:
+
+```bash
+npm run build
+# o
+yarn build
+
+Los archivos de producción se generarán en la carpeta `dist`.
+
+## Licencia
+
+Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE](LICENSE) para más información.

@@ -2,12 +2,56 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Estilos base opcionales */
-@layer base {
-  html, body, #root {
-    height: 100%;
+/* Custom styles that can't be handled by Tailwind */
+@layer components {
+  .toggle-switch {
+    @apply relative inline-block w-14 h-8;
   }
-  body {
-    @apply bg-slate-100 text-slate-900;
+
+  .toggle-switch input {
+    @apply opacity-0 w-0 h-0;
+  }
+
+  .toggle-slider {
+    @apply absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-gray-300 transition-all duration-300 rounded-full;
+  }
+
+  .toggle-slider:before {
+    @apply absolute h-6 w-6 left-1 bottom-1 bg-white transition-all duration-300 rounded-full content-[''];
+  }
+
+  input:checked + .toggle-slider {
+    @apply bg-indigo-600;
+  }
+
+  input:checked + .toggle-slider:before {
+    @apply transform translate-x-6;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-full transition-colors duration-200;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+  }
+
+  /* Animation */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 0.3s ease-out forwards;
   }
 }

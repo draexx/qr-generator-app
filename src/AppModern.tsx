@@ -84,7 +84,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
     super(props);
     this.state = { hasError: false };
   }
-  
+
   static getDerivedStateFromError(_error: Error) {
     return { hasError: true };
   }
@@ -116,9 +116,9 @@ function buildVCard(data: FormData) {
     vurl = '',
     address = '',
   } = data;
-  
+
   const url = vurl;
-  
+
   const lines = [
     'BEGIN:VCARD',
     'VERSION:3.0',
@@ -138,10 +138,10 @@ function buildVCard(data: FormData) {
 function AppModern() {
   // Estado para el tipo de QR actual
   const [type, setType] = useState<QRType>('url');
-  
+
   // Estado para controlar si el panel de apariencia está abierto
   const [appearancePanelOpen, setAppearancePanelOpen] = useState(false);
-  
+
   // Estado para el modo oscuro
   const [isDarkMode, setIsDarkMode] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -151,15 +151,15 @@ function AppModern() {
     }
     return false;
   });
-  
+
   // Estado para el menú móvil
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // Estado para el modal de recorte de imagen
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [imageForCrop, setImageForCrop] = useState<string | null>(null);
   const [croppedImage, setCroppedImage] = useState<string | null>(null);
-  
+
   // Estado para la apariencia del QR
   const [qrAppearance, setQrAppearance] = useState<QRAppearance>(() => ({
     fgColor: '#000000',
@@ -175,7 +175,7 @@ function AppModern() {
       radius: 8
     }
   }));
-  
+
   // Estado para los datos del formulario
   const [formData, setFormData] = useState<FormData>(() => ({
     url: 'https://ejemplo.com',
@@ -200,10 +200,10 @@ function AppModern() {
     altitude: '0',
     locationTitle: 'Nueva York'
   }));
-  
+
   // Estado para el historial de códigos QR
   const { history, addToHistory, removeFromHistory, clearHistory } = useQRHistory();
-  
+
   // Aplicar la clase dark al elemento html cuando cambie el modo oscuro
   useEffect(() => {
     if (isDarkMode) {
@@ -234,22 +234,22 @@ function AppModern() {
       }));
     }
   }, [isDarkMode]);
-  
+
   // Función para alternar el modo oscuro
   const toggleDarkMode = useCallback(() => {
     setIsDarkMode(!isDarkMode);
   }, [isDarkMode]);
-  
+
   // Función para manejar cambios en los inputs del formulario
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target as HTMLInputElement;
-    
+
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
     }));
   }, []);
-  
+
   // Función para manejar cambios en la apariencia del QR
   const handleAppearanceChange = useCallback((updates: Partial<QRAppearance>) => {
     setQrAppearance(prev => ({
@@ -258,12 +258,12 @@ function AppModern() {
       border: updates.border ? { ...prev.border, ...updates.border } : prev.border
     }));
   }, []);
-  
+
   // Función para manejar la subida de un logo
   const handleLogoUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    
+
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target?.result) {
@@ -275,18 +275,18 @@ function AppModern() {
     // Reset the input value to allow selecting the same file again
     e.target.value = '';
   }, []);
-  
+
   // Función para manejar la descarga del código QR
   const handleDownload = useCallback((format: string) => {
     // Implementar lógica de descarga aquí
     console.log(`Descargando QR en formato ${format}`);
   }, []);
-  
+
   // Función para formatear la fecha del historial
   const formatTimestamp = useCallback((timestamp: number) => {
     return new Date(timestamp).toLocaleString();
   }, []);
-  
+
   // Obtener el valor del QR basado en el tipo seleccionado
   const qrValue = useMemo(() => {
     try {
@@ -313,7 +313,7 @@ function AppModern() {
       return 'Error al generar el código QR';
     }
   }, [type, formData]);
-  
+
   // Efecto para agregar al historial cuando se genera un nuevo código QR
   useEffect(() => {
     if (qrValue && !qrValue.startsWith('Selecciona') && !qrValue.startsWith('Error')) {
@@ -325,7 +325,7 @@ function AppModern() {
       });
     }
   }, [qrValue, type, formData, addToHistory]);
-  
+
   // Función para cargar un código QR desde el historial
   const loadFromHistory = useCallback((item: QRHistoryItem) => {
     setType(item.type as QRType);
@@ -334,7 +334,7 @@ function AppModern() {
       ...item.data
     }));
   }, []);
-  
+
   // Función para manejar el recorte de la imagen
   const handleCropComplete = useCallback((croppedImageUrl: string) => {
     setCroppedImage(croppedImageUrl);
@@ -343,7 +343,7 @@ function AppModern() {
     // Cerrar el modal después de aplicar el recorte
     setCropModalOpen(false);
   }, [handleAppearanceChange]);
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-gray-100 transition-colors duration-200">
       {/* Header */}
@@ -373,7 +373,7 @@ function AppModern() {
                 </button>
               </nav>
             </div>
-            
+
             <div className="flex items-center space-x-2">
               <button
                 onClick={toggleDarkMode}
@@ -387,7 +387,7 @@ function AppModern() {
                   <FiMoon className="w-5 h-5 text-gray-600" />
                 )}
               </button>
-              
+
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-700/60 focus:outline-none"
@@ -417,7 +417,7 @@ function AppModern() {
             </div>
           </div>
         </div>
-        
+
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-gray-200 dark:border-gray-700">
@@ -959,7 +959,7 @@ function AppModern() {
                 </div>
               </div>
             </div>
-            
+
             {/* History section */}
             {history.length > 0 && (
               <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
@@ -1032,7 +1032,7 @@ function AppModern() {
               <FiX className="h-6 w-6" />
             </button>
           </div>
-          
+
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             <div>
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Color del código</h3>
@@ -1122,7 +1122,7 @@ function AppModern() {
           </div>
         </div>
       </div>
-      
+
       {/* Image Cropper Modal */}
       {cropModalOpen && imageForCrop && (
         <div className="fixed inset-0 z-50 overflow-y-auto dark:bg-gray-900">
