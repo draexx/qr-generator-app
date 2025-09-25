@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState, lazy, Suspense, useCallback } from 'react';
+import React, { useEffect, useMemo, useRef, useState, useCallback } from 'react';
 import { ImageCropper } from './components/ImageCropper';
 import { useQRHistory } from './hooks/useQRHistory';
 import type { QRHistoryItem } from './hooks/useQRHistory';
@@ -22,19 +22,10 @@ import {
   FiSun,
   FiMoon,
   FiEye,
-  FiEdit2,
-  FiImage,
-  FiSettings,
-  FiCopy,
-  FiShare2,
   FiCode
 } from 'react-icons/fi';
 
 // Cargar componentes dinámicamente
-const WiFiQR = lazy(() => import('./components/QRTypes/WiFiQR'));
-const EmailQR = lazy(() => import('./components/QRTypes/EmailQR'));
-const SMSQR = lazy(() => import('./components/QRTypes/SMSQR'));
-const GeoQR = lazy(() => import('./components/QRTypes/GeoQR'));
 
 type QRType = 'url' | 'text' | 'vcard' | 'wifi' | 'email' | 'sms' | 'geo';
 
@@ -158,7 +149,6 @@ function AppModern() {
   // Estado para el modal de recorte de imagen
   const [cropModalOpen, setCropModalOpen] = useState(false);
   const [imageForCrop, setImageForCrop] = useState<string | null>(null);
-  const [croppedImage, setCroppedImage] = useState<string | null>(null);
 
   // Estado para la apariencia del QR
   const [qrAppearance, setQrAppearance] = useState<QRAppearance>(() => ({
@@ -347,7 +337,6 @@ function AppModern() {
 
   // Función para manejar el recorte de la imagen
   const handleCropComplete = useCallback((croppedImageUrl: string) => {
-    setCroppedImage(croppedImageUrl);
     // Actualizar la apariencia del QR con la imagen recortada
     handleAppearanceChange({ logoDataUrl: croppedImageUrl });
     // Cerrar el modal después de aplicar el recorte
