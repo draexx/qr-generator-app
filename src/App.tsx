@@ -744,6 +744,60 @@ function App() {
                 <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Apariencia</h3>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Estilo de puntos */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estilo de puntos</label>
+                    <select
+                      className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={qrAppearance.dotType || 'square'}
+                      onChange={(e) => setQrAppearance(prev => ({
+                        ...prev,
+                        dotType: e.target.value as 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded'
+                      }))}
+                    >
+                      <option value="square">Cuadrados</option>
+                      <option value="dots">Puntos</option>
+                      <option value="rounded">Redondeados</option>
+                      <option value="classy">Elegantes</option>
+                      <option value="classy-rounded">Elegantes redondeados</option>
+                      <option value="extra-rounded">Extra redondeados</option>
+                    </select>
+                  </div>
+
+                  {/* Estilo de esquinas grandes */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estilo de esquinas</label>
+                    <select
+                      className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={qrAppearance.cornerSquareType || 'square'}
+                      onChange={(e) => setQrAppearance(prev => ({
+                        ...prev,
+                        cornerSquareType: e.target.value as 'square' | 'dot' | 'extra-rounded'
+                      }))}
+                    >
+                      <option value="square">Cuadradas</option>
+                      <option value="dot">Puntos</option>
+                      <option value="extra-rounded">Extra redondeadas</option>
+                    </select>
+                  </div>
+
+                  {/* Estilo de esquinas pequeñas */}
+                  <div className="space-y-2">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estilo de puntos de esquina</label>
+                    <select
+                      className="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      value={qrAppearance.cornerDotType || 'square'}
+                      onChange={(e) => setQrAppearance(prev => ({
+                        ...prev,
+                        cornerDotType: e.target.value as 'square' | 'dot' | 'extra-rounded'
+                      }))}
+                    >
+                      <option value="square">Cuadrados</option>
+                      <option value="dot">Puntos</option>
+                      <option value="extra-rounded">Extra redondeados</option>
+                    </select>
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Color de primer plano
