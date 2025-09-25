@@ -729,7 +729,7 @@ function AppModern() {
                     </div>
                   </div>
                 )}
-                
+
                 {type === 'email' && (
                   <div className="space-y-4">
                     <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">Configuración de Email</h3>
@@ -885,7 +885,7 @@ function AppModern() {
                     </div>
                   </div>
                 )}
-                
+
                 {/* Botón de generar QR */}
                 <div className="mt-6 flex justify-end">
                   <button
@@ -920,7 +920,7 @@ function AppModern() {
                       border={qrAppearance.border}
                     />
                   </div>
-                  
+
                   <div className="mt-4 text-center">
                     <p className="text-sm text-gray-500 dark:text-gray-400 break-all max-w-xs">
                       {qrValue.length > 50 ? `${qrValue.substring(0, 50)}...` : qrValue}
@@ -929,7 +929,7 @@ function AppModern() {
                       {qrValue.length} caracteres
                     </p>
                   </div>
-                  
+
                   <div className="mt-6 w-full">
                     <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                       Formato de descarga
@@ -948,16 +948,16 @@ function AppModern() {
                       ))}
                     </div>
                   </div>
-                  
+
                   <div className="mt-6 w-full">
                     <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
                       Usa el botón <strong>Apariencia</strong> en la barra superior para personalizar el código QR.
                     </p>
                   </div>
-                  </div>
                 </div>
               </div>
             </div>
+          </div>
 
             {/* History section */}
             {history.length > 0 && (
@@ -1013,13 +1013,12 @@ function AppModern() {
                 </div>
               </div>
             )}
-          </div>
-
+        </div>
       </main>
 
       {/* Panel de personalización de apariencia */}
-      <div className={`fixed inset-y-0 right-0 w-full sm:w-96 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
-        appearancePanelOpen ? 'translate-x-0' : 'translate-x-full'
+      <div className={`fixed inset-y-0 left-0 w-full sm:w-96 bg-white dark:bg-gray-800 shadow-xl transform transition-transform duration-300 ease-in-out z-40 ${
+        appearancePanelOpen ? 'translate-x-0 dark:shadow-[0_4px_15px_rgba(255,255,255,0.3)] ' : '-translate-x-full'
       }`}>
         <div className="h-full flex flex-col">
           <div className="px-4 py-5 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between">
