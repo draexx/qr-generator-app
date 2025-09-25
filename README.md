@@ -2,6 +2,8 @@
 
 Una aplicación moderna para generar códigos QR personalizables con soporte para múltiples tipos de contenido.
 
+🔗 **Demo en vivo:** [https://qr-generator-app-7zt8.vercel.app](https://qr-generator-app-7zt8.vercel.app)
+
 ## Características
 
 - Generación de códigos QR para diferentes tipos de contenido:

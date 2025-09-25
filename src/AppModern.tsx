@@ -266,11 +266,149 @@ function AppModern() {
     e.target.value = '';
   }, []);
 
+  // Referencia al canvas del QR
+  const qrCodeRef = useRef<HTMLDivElement>(null);
+
   // Función para manejar la descarga del código QR
-  const handleDownload = useCallback((format: string) => {
-    // Implementar lógica de descarga aquí
-    console.log(`Descargando QR en formato ${format}`);
+  const handleDownload = useCallback(async (format: string) => {
+    if (!qrCodeRef.current) return;
+
+    try {
+      // Buscar el elemento SVG dentro del contenedor del QR
+      const svgElement = qrCodeRef.current.querySelector('svg');
+      if (!svgElement) return;
+
+      // Convertir el SVG a un canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      // Obtener las dimensiones del SVG
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const img = new Image();
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(svgBlob);
+
+      // Manejar SVG por separado
+      if (format === 'svg') {
+        try {
+          // Obtener el contenido SVG original como string
+          let svgString = new XMLSerializer().serializeToString(svgElement);
+
+          // Crear un documento XML para manipular el SVG
+          const parser = new DOMParser();
+          const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
+
+          // Eliminar el elemento 253 (si existe)
+          const allElements = svgDoc.querySelectorAll('*');
+          if (allElements.length > 253) {
+            const elementToRemove = allElements[252]; // Índice 252 es el elemento 253 (0-based)
+            if (elementToRemove && elementToRemove.parentNode) {
+              elementToRemove.parentNode.removeChild(elementToRemove);
+            }
+          }
+
+          // Volver a serializar el SVG modificado
+          svgString = new XMLSerializer().serializeToString(svgDoc.documentElement);
+
+          // Reemplazar colores directamente en el string SVG
+          const bgColor = qrAppearance.bgColor || '#ffffff';
+          const fgColor = qrAppearance.fgColor || '#000000';
+
+          // Asegurarse de que el SVG tenga un viewBox
+          if (!svgString.includes('viewBox=')) {
+            const width = svgElement.getAttribute('width') || '300';
+            const height = svgElement.getAttribute('height') || '300';
+            svgString = svgString.replace('<svg', `<svg viewBox="0 0 ${width} ${height}"`);
+          }
+
+          // Crear un nuevo SVG con los colores correctos
+          const newSvgString = `
+            <svg ${svgString.split('<svg')[1]}
+              xmlns="http://www.w3.org/2000/svg">
+              <rect width="100%" height="100%" fill="${bgColor}" />
+              ${svgString.split('>').slice(1).join('>')
+                // Reemplazar solo los fills que no sean transparentes
+                .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
+                // Eliminar cualquier estilo de fondo que pueda estar en el SVG original
+                .replace(/style="[^"]*background[^;]*[;"]?/g, '')}
+            </svg>
+          `;
+
+          // Crear y descargar el archivo
+          const svgBlob = new Blob([newSvgString], { type: 'image/svg+xml' });
+          const svgUrl = URL.createObjectURL(svgBlob);
+          downloadFile(svgUrl, 'codigo-qr.svg');
+          URL.revokeObjectURL(svgUrl);
+          return;
+        } catch (error) {
+          console.error('Error al generar el SVG:', error);
+          return;
+        }
+      }
+
+      // Para formatos de imagen (PNG, JPG, WebP)
+      img.onload = () => {
+        try {
+          // Configurar el tamaño del canvas
+          canvas.width = img.width;
+          canvas.height = img.height;
+
+          // Para JPG, llenamos el canvas con el color de fondo primero
+          if (format === 'jpeg' || format === 'jpg') {
+            ctx.fillStyle = qrAppearance.bgColor || '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+
+          // Dibujar la imagen en el canvas
+          ctx.drawImage(img, 0, 0);
+
+          // Convertir el canvas al formato deseado y descargar
+          let mimeType = 'image/png';
+          let extension = 'png';
+
+          switch (format) {
+            case 'jpeg':
+            case 'jpg':
+              mimeType = 'image/jpeg';
+              extension = 'jpg';
+              break;
+            case 'webp':
+              mimeType = 'image/webp';
+              extension = 'webp';
+              break;
+          }
+
+          // Para formatos que no son SVG
+          canvas.toBlob((blob) => {
+            if (!blob) return;
+
+            const url = URL.createObjectURL(blob);
+            downloadFile(url, `codigo-qr.${extension}`);
+            URL.revokeObjectURL(url);
+          }, mimeType, 1.0);
+
+        } catch (error) {
+          console.error('Error al procesar la imagen:', error);
+        }
+      };
+
+      img.src = url;
+    } catch (error) {
+      console.error('Error al generar la imagen del código QR:', error);
+    }
   }, []);
+
+  // Función auxiliar para descargar el archivo
+  const downloadFile = (url: string, filename: string) => {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   // Función para formatear la fecha del historial
   const formatTimestamp = useCallback((timestamp: number) => {
@@ -885,16 +1023,6 @@ function AppModern() {
                     </div>
                   </div>
                 )}
-
-                {/* Botón de generar QR */}
-                <div className="mt-6 flex justify-end">
-                  <button
-                    type="button"
-                    className="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Generar Código QR
-                  </button>
-                </div>
               </div>
             </div>
           </div>
@@ -908,17 +1036,19 @@ function AppModern() {
               <div className="p-4">
                 <div className="flex flex-col items-center">
                   <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-4 w-full max-w-xs flex items-center justify-center">
-                    <QRPreview
-                      value={qrValue}
-                      fgColor={qrAppearance.fgColor}
-                      bgColor={qrAppearance.bgColor}
-                      size={200}
-                      logoDataUrl={qrAppearance.logoDataUrl}
-                      dotType={qrAppearance.dotType}
-                      cornerSquareType={qrAppearance.cornerSquareType}
-                      cornerDotType={qrAppearance.cornerDotType}
-                      border={qrAppearance.border}
-                    />
+                    <div ref={qrCodeRef}>
+                      <QRPreview
+                        value={qrValue}
+                        fgColor={qrAppearance.fgColor}
+                        bgColor={qrAppearance.bgColor}
+                        size={200}
+                        logoDataUrl={qrAppearance.logoDataUrl}
+                        dotType={qrAppearance.dotType}
+                        cornerSquareType={qrAppearance.cornerSquareType}
+                        cornerDotType={qrAppearance.cornerDotType}
+                        border={qrAppearance.border}
+                      />
+                    </div>
                   </div>
 
                   <div className="mt-4 text-center">
