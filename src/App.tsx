@@ -17,7 +17,8 @@ import {
   FiHome,
   FiMessageSquare,
   FiMapPin,
-  FiX
+  FiX,
+  FiLock
 } from 'react-icons/fi';
 
 // Cargar componentes dinámicamente
@@ -385,9 +386,235 @@ function App() {
                   </div>
                 </div>
               )}
+              {/* Formulario WiFi */}
+              {type === 'wifi' && (
+                <div className="space-y-4">
+                  <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">Configuración de Red WiFi</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de la red (SSID)</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiWifi className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="text"
+                          name="ssid"
+                          className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="MiRedWiFi"
+                          value={formData.ssid || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Contraseña</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiLock className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="password"
+                          name="password"
+                          className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="••••••••"
+                          value={formData.password || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo de seguridad</label>
+                      <select
+                        name="encryption"
+                        className="block w-full pl-3 pr-10 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        value={formData.encryption || 'WPA'}
+                        onChange={handleInputChange}
+                      >
+                        <option value="WPA">WPA/WPA2</option>
+                        <option value="WEP">WEP</option>
+                        <option value="">Ninguna</option>
+                      </select>
+                    </div>
+                    <div className="flex items-end">
+                      <label className="flex items-center">
+                        <input
+                          type="checkbox"
+                          name="hidden"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600"
+                          checked={formData.hidden || false}
+                          onChange={(e) => setFormData({...formData, hidden: e.target.checked})}
+                        />
+                        <span className="ml-2 text-sm text-gray-700 dark:text-gray-300">Red oculta</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Formulario Email */}
+              {type === 'email' && (
+                <div className="space-y-4">
+                  <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">Configuración de Email</h3>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Dirección de correo</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiMail className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="email"
+                          name="email"
+                          className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="ejemplo@dominio.com"
+                          value={formData.email || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Asunto</label>
+                      <input
+                        type="text"
+                        name="subject"
+                        className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Asunto del correo"
+                        value={formData.subject || ''}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Mensaje</label>
+                      <textarea
+                        name="body"
+                        rows={4}
+                        className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Escribe tu mensaje aquí..."
+                        value={formData.body || ''}
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Formulario SMS */}
+              {type === 'sms' && (
+                <div className="space-y-4">
+                  <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">Configuración de SMS</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Número de teléfono</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiPhone className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="tel"
+                          name="phone"
+                          className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="+1234567890"
+                          value={formData.phone || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Mensaje</label>
+                      <div className="relative">
+                        <div className="absolute top-3 left-3">
+                          <FiMessageSquare className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <textarea
+                          name="message"
+                          rows={4}
+                          className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Escribe tu mensaje SMS aquí..."
+                          value={formData.message || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Formulario Ubicación */}
+              {type === 'geo' && (
+                <div className="space-y-4">
+                  <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">Configuración de Ubicación</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Latitud</label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          step="0.000001"
+                          name="latitude"
+                          className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="40.7128"
+                          value={formData.latitude || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Longitud</label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          step="0.000001"
+                          name="longitude"
+                          className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="-74.0060"
+                          value={formData.longitude || ''}
+                          onChange={handleInputChange}
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Título de la ubicación</label>
+                      <div className="relative">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                          <FiMapPin className="h-5 w-5 text-gray-400" />
+                        </div>
+                        <input
+                          type="text"
+                          name="locationTitle"
+                          className="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Mi ubicación"
+                          value={formData.locationTitle || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Altura (opcional)</label>
+                      <div className="relative">
+                        <input
+                          type="number"
+                          name="altitude"
+                          className="block w-full px-3 py-2.5 border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          placeholder="Altura en metros"
+                          value={formData.altitude || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Formulario vCard */}
               {type === 'vcard' && (
                 <div className="space-y-4">
-                  <h3 className="text-md font-medium text-gray-700">Contact Information</h3>
+                  <h3 className="text-md font-medium text-gray-700 dark:text-gray-300">Información de Contacto</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="block text-sm font-medium text-gray-700">First Name</label>
