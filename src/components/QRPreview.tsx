@@ -1,5 +1,12 @@
 import React, { useEffect, useRef } from 'react';
 
+interface BorderProps {
+  enabled: boolean;
+  color: string;
+  width: number;
+  radius: number;
+}
+
 interface QRPreviewProps {
   value: string;
   fgColor: string;
@@ -9,6 +16,7 @@ interface QRPreviewProps {
   dotType?: 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
   cornerSquareType?: 'square' | 'dot' | 'extra-rounded';
   cornerDotType?: 'square' | 'dot' | 'extra-rounded';
+  border?: BorderProps;
 }
 
 export const QRPreview: React.FC<QRPreviewProps> = ({
@@ -20,9 +28,16 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
   dotType = 'square',
   cornerSquareType = 'square',
   cornerDotType = 'square',
+  border = {
+    enabled: false,
+    color: '#000000',
+    width: 10,
+    radius: 0
+  },
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const qrRef = useRef<any>(null);
+  const qrContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!value) return;
@@ -31,9 +46,12 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
       try {
         const QRCodeStyling = (await import('qr-code-styling')).default;
         
-        qrRef.current = new QRCodeStyling({
-          width: size,
-          height: size,
+        // Calculate the QR code size based on border width
+        const qrSize = border.enabled ? size - (border.width * 2) : size;
+        
+        const qrCode = new QRCodeStyling({
+          width: qrSize,
+          height: qrSize,
           data: value,
           margin: 1,
           qrOptions: {
@@ -57,51 +75,14 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
             color: bgColor,
           },
           image: logoDataUrl,
-          dotsOptionsHelper: {
-            colorType: {
-              single: true,
-              gradient: false,
-            },
-            gradient: {
-              linear: true,
-              radial: false,
-              color1: '#000000',
-              color2: '#000000',
-              rotation: '0',
-            },
-          },
-          cornersSquareOptionsHelper: {
-            colorType: {
-              single: true,
-              gradient: false,
-            },
-            gradient: {
-              linear: true,
-              radial: false,
-              color1: '#000000',
-              color2: '#000000',
-              rotation: '0',
-            },
-          },
-          cornersDotOptionsHelper: {
-            colorType: {
-              single: true,
-              gradient: false,
-            },
-            gradient: {
-              linear: true,
-              radial: false,
-              color1: '#000000',
-              color2: '#000000',
-              rotation: '0',
-            },
-          },
         });
 
         if (containerRef.current) {
           containerRef.current.innerHTML = '';
-          qrRef.current.append(containerRef.current);
+          qrCode.append(containerRef.current);
         }
+
+        qrRef.current = qrCode;
       } catch (error) {
         console.error('Error al cargar la biblioteca QR:', error);
       }
@@ -110,5 +91,44 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
     loadQRCodeStyling();
   }, [value, fgColor, bgColor, size, logoDataUrl, dotType, cornerSquareType, cornerDotType]);
 
-  return <div ref={containerRef} className="qr-code" />;
+  // Calculate border styles
+  const borderColor = fgColor; // Usar el color de primer plano para el borde
+
+  const qrContainerStyles = {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: bgColor,
+    borderRadius: cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '8%' : '0',
+  };
+
+  return (
+    <div style={{
+      width: size,
+      height: size,
+      ...border.enabled && {
+        padding: border.width,
+        backgroundColor: fgColor, // Usar el color de primer plano para el borde
+        borderRadius: border.radius > 0 ? `${border.radius}%` : 
+          (cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '10%' : '0'),
+      },
+      display: 'inline-block',
+      boxSizing: 'border-box' as const,
+    }}>
+      <div 
+        ref={containerRef}
+        style={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: bgColor,
+          borderRadius: cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '8%' : '0',
+        }}
+      />
+    </div>
+  );
 };

@@ -34,9 +34,15 @@ interface QRAppearance {
   bgColor: string;
   size: number;
   logoDataUrl?: string;
-  dotType?: 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
-  cornerSquareType?: 'square' | 'dot' | 'extra-rounded';
-  cornerDotType?: 'square' | 'dot' | 'extra-rounded';
+  dotType: 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
+  cornerSquareType: 'square' | 'dot' | 'extra-rounded';
+  cornerDotType: 'square' | 'dot' | 'extra-rounded';
+  border: {
+    enabled: boolean;
+    color: string;
+    width: number;
+    radius: number;
+  };
 }
 
 interface FormData {
@@ -158,24 +164,43 @@ function App() {
     altitude: '10',
     locationTitle: 'Nueva York'
   });
-
   // Estado para la apariencia del QR
   const [qrAppearance, setQrAppearance] = useState<QRAppearance>({
     fgColor: isDarkMode ? '#ffffff' : '#000000',
     bgColor: isDarkMode ? '#1f2937' : '#ffffff',
     size: 256,
-    logoDataUrl: undefined,
     dotType: 'square',
     cornerSquareType: 'square',
-    cornerDotType: 'square'
+    cornerDotType: 'square',
+    border: {
+      enabled: false,
+      color: isDarkMode ? '#ffffff' : '#000000',
+      width: 10,
+      radius: 8 // Radio predeterminado para esquinas redondeadas
+    }
   });
+
 
   // Manejar cambios en la apariencia del QR
   const handleAppearanceChange = useCallback((updates: Partial<QRAppearance>) => {
-    setQrAppearance(prev => ({
-      ...prev,
-      ...updates
-    }));
+    setQrAppearance(prev => {
+      // Si se actualiza el color de primer plano y el borde está habilitado,
+      // actualizamos también el color del borde
+      if (updates.fgColor && prev.border?.enabled) {
+        return {
+          ...prev,
+          ...updates,
+          border: {
+            ...prev.border,
+            color: updates.fgColor
+          }
+        };
+      }
+      return {
+        ...prev,
+        ...updates
+      };
+    });
   }, []);
 
   const [showHistory, setShowHistory] = useState(false);
@@ -798,6 +823,64 @@ function App() {
                     </select>
                   </div>
 
+                  {/* Configuración de borde */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                        Borde
+                      </label>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input
+                          type="checkbox"
+                          className="sr-only peer"
+                          checked={qrAppearance.border.enabled}
+                          onChange={(e) => setQrAppearance(prev => ({
+                            ...prev,
+                            border: {
+                              ...prev.border,
+                              enabled: e.target.checked
+                            }
+                          }))}
+                        />
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                      </label>
+                    </div>
+                    
+                    {qrAppearance.border.enabled && (
+                      <div className="space-y-2 pl-4 border-l-2 border-gray-200 dark:border-gray-600">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                          El color del borde es el mismo que el de primer plano
+                        </div>
+                        
+                        <div>
+                          <label className="block text-xs text-gray-500 dark:text-gray-400 mb-1">
+                            Ancho del borde: {qrAppearance.border.width}px
+                          </label>
+                          <input
+                            type="range"
+                            min="1"
+                            max="30"
+                            value={qrAppearance.border.width}
+                            onChange={(e) => setQrAppearance(prev => ({
+                              ...prev,
+                              border: {
+                                ...prev.border,
+                                width: parseInt(e.target.value)
+                              }
+                            }))}
+                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                          />
+                        </div>
+                        
+                        {(qrAppearance.cornerSquareType === 'extra-rounded' || qrAppearance.cornerDotType === 'extra-rounded') && (
+                          <div className="text-xs text-gray-500 dark:text-gray-400">
+                            El radio del borde se ajusta automáticamente
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
                   <div>
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Color de primer plano
@@ -898,6 +981,7 @@ function App() {
                     dotType={qrAppearance.dotType}
                     cornerSquareType={qrAppearance.cornerSquareType}
                     cornerDotType={qrAppearance.cornerDotType}
+                    border={qrAppearance.border}
                   />
                 </div>
                 
