@@ -315,16 +315,26 @@ function AppModern() {
   }, [type, formData]);
 
   // Efecto para agregar al historial cuando se genera un nuevo código QR
+  const prevQrValueRef = useRef<string>('');
+
   useEffect(() => {
-    if (qrValue && !qrValue.startsWith('Selecciona') && !qrValue.startsWith('Error')) {
-      addToHistory({
-        id: Date.now().toString(),
+    // Solo agregar al historial si el valor del QR ha cambiado y es válido
+    if (qrValue &&
+        qrValue !== prevQrValueRef.current &&
+        !qrValue.startsWith('Selecciona') &&
+        !qrValue.startsWith('Error')) {
+
+      addToHistory(
         type,
-        data: { ...formData },
-        timestamp: Date.now()
-      });
+        { ...formData },
+        qrAppearance,
+        qrValue
+      );
+
+      // Actualizar la referencia con el valor actual
+      prevQrValueRef.current = qrValue;
     }
-  }, [qrValue, type, formData, addToHistory]);
+  }, [qrValue, type, formData, qrAppearance, addToHistory]);
 
   // Función para cargar un código QR desde el historial
   const loadFromHistory = useCallback((item: QRHistoryItem) => {
