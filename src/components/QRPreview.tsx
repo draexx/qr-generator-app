@@ -91,14 +91,14 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
 
   const getBorderRadius = () => {
     if (border.radius > 0) return `${border.radius}%`;
-    return cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '6%' : '0';
+    return cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '10%' : '0';
   };
 
   return (
     <div 
       className="relative inline-block transition-all duration-300"
       style={{
-        padding: border?.enabled ? `${border.width}px` : '0',
+        padding: border?.enabled ? `${border.width}px` : '0.5em',
         backgroundColor: border?.enabled ? fgColor : 'transparent',
         borderRadius: getBorderRadius(),
       }}
@@ -108,7 +108,8 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
         className="w-full h-full flex items-center justify-center transition-all duration-300"
         style={{
           backgroundColor: bgColor,
-          borderRadius: cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '4%' : '0',
+          borderRadius: cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '10%' : '0',
+          padding: '0.5em',
         }}
       />
     </div>

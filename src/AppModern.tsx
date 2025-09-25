@@ -1225,6 +1225,46 @@ function AppModern() {
             </div>
 
             <div>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estilo de esquinas exteriores</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {['square', 'dot', 'extra-rounded'].map((style) => (
+                  <button
+                    key={style}
+                    type="button"
+                    onClick={() => handleAppearanceChange({ cornerSquareType: style as any })}
+                    className={`p-2 text-xs rounded border ${
+                      qrAppearance.cornerSquareType === style
+                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                    }`}
+                  >
+                    {style}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Estilo de puntos de esquina</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {['square', 'dot', 'extra-rounded'].map((style) => (
+                  <button
+                    key={style}
+                    type="button"
+                    onClick={() => handleAppearanceChange({ cornerDotType: style as any })}
+                    className={`p-2 text-xs rounded border ${
+                      qrAppearance.cornerDotType === style
+                        ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+                        : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                    }`}
+                  >
+                    {style}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div>
               <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Logo</h3>
               <div className="mt-1 flex items-center">
                 <label className="cursor-pointer bg-white dark:bg-gray-700 py-2 px-3 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
