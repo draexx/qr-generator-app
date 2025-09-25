@@ -45,10 +45,8 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
     const loadQRCodeStyling = async () => {
       try {
         const QRCodeStyling = (await import('qr-code-styling')).default;
-        
         // Calculate the QR code size based on border width
         const qrSize = border.enabled ? size - (border.width * 2) : size;
-        
         const qrCode = new QRCodeStyling({
           width: qrSize,
           height: qrSize,
@@ -91,10 +89,23 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
     loadQRCodeStyling();
   }, [value, fgColor, bgColor, size, logoDataUrl, dotType, cornerSquareType, cornerDotType]);
 
-  // Calculate border styles
-  const borderColor = fgColor; // Usar el color de primer plano para el borde
+  // Estilos para el contenedor principal que incluye el borde
+  const containerStyle = {
+    width: size,
+    height: size,
+    display: 'inline-block',
+    position: 'relative' as const,
+    boxSizing: 'border-box' as const,
+    ...(border.enabled && {
+      padding: border.width,
+      backgroundColor: fgColor, // Color del borde
+      borderRadius: border.radius > 0 ? `${border.radius}%` :
+        (cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '8%' : '0'),
+    }),
+  };
 
-  const qrContainerStyles = {
+  // Estilos para el contenedor interno del QR
+  const qrContainerStyle = {
     width: '100%',
     height: '100%',
     display: 'flex',
@@ -105,29 +116,10 @@ export const QRPreview: React.FC<QRPreviewProps> = ({
   };
 
   return (
-    <div style={{
-      width: size,
-      height: size,
-      ...border.enabled && {
-        padding: border.width,
-        backgroundColor: fgColor, // Usar el color de primer plano para el borde
-        borderRadius: border.radius > 0 ? `${border.radius}%` : 
-          (cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '10%' : '0'),
-      },
-      display: 'inline-block',
-      boxSizing: 'border-box' as const,
-    }}>
+    <div style={containerStyle}>
       <div 
         ref={containerRef}
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: bgColor,
-          borderRadius: cornerSquareType === 'extra-rounded' || cornerDotType === 'extra-rounded' ? '8%' : '0',
-        }}
+        style={qrContainerStyle}
       />
     </div>
   );

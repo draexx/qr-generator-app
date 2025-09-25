@@ -126,9 +126,8 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
             </svg>
           </button>
         </div>
-        
         <div className="p-4">
-          <div className="mb-4">
+          <div className="mb-4 flex justify-center">
             {imageUrl && (
               <div className="flex justify-center">
                 <ReactCrop
@@ -148,7 +147,6 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
                 </ReactCrop>
               </div>
             )}
-            
             <div className="mt-4 flex justify-center">
               <div className="text-center">
                 <p className="text-sm text-gray-500 mb-2">Vista previa del recorte:</p>
@@ -167,7 +165,6 @@ export const ImageCropper: React.FC<ImageCropperProps> = ({
               </div>
             </div>
           </div>
-          
           <div className="flex justify-end space-x-3 mt-4">
             <button
               type="button"
