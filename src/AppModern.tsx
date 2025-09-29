@@ -298,11 +298,17 @@ function AppModern() {
           // Crear un documento XML para manipular el SVG
           const parser = new DOMParser();
           const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-
-          // Eliminar el elemento 253 (si existe)
+          // Eliminar el elemento específico basado en si hay logo o no
           const allElements = svgDoc.querySelectorAll('*');
-          if (allElements.length > 253) {
-            const elementToRemove = allElements[252]; // Índice 252 es el elemento 253 (0-based)
+          // Índice 225 para el elemento 226 cuando hay logo (0-based)
+          // Índice 252 para el elemento 253 cuando no hay logo (0-based)
+          const elementIndexToRemove = qrAppearance.logoDataUrl ? 225 : 252;
+          allElements.forEach((el, i) => {
+            console.log(`Elemento ${i}:`, el.tagName, 'Atributos:', 
+              Array.from(el.attributes).map(attr => `${attr.name}="${attr.value}"`));
+          });
+          if (allElements.length > elementIndexToRemove) {
+            const elementToRemove = allElements[elementIndexToRemove];
             if (elementToRemove && elementToRemove.parentNode) {
               elementToRemove.parentNode.removeChild(elementToRemove);
             }
@@ -323,17 +329,42 @@ function AppModern() {
           }
 
           // Crear un nuevo SVG con los colores correctos
-          const newSvgString = `
-            <svg ${svgString.split('<svg')[1]}
-              xmlns="http://www.w3.org/2000/svg">
-              <rect width="100%" height="100%" fill="${bgColor}" />
-              ${svgString.split('>').slice(1).join('>')
-                // Reemplazar solo los fills que no sean transparentes
-                .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
-                // Eliminar cualquier estilo de fondo que pueda estar en el SVG original
-                .replace(/style="[^"]*background[^;]*[;"]?/g, '')}
-            </svg>
-          `;
+          let newSvgString: string;
+          if (qrAppearance.logoDataUrl) {
+            // Primero creamos el SVG con los colores y estilos
+            let tempSvgString = `
+              <svg ${svgString.split('<svg')[1]}
+                xmlns="http://www.w3.org/2000/svg">
+                ${svgString.split('>').slice(1).join('>')
+                  .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
+                  .replace(/style="[^"]*background[^;]*[;" ]?/g, '')}
+              </svg>
+            `;
+            // Ahora procesamos el SVG generado para quitar el rect de fondo
+            const tempDoc = new DOMParser().parseFromString(tempSvgString, 'image/svg+xml');
+            const svgContent = tempDoc.documentElement;
+            // Buscar y eliminar cualquier rect que sea el fondo (el primero que encontremos)
+            const rects = svgContent.querySelectorAll('rect');
+            for (const rect of Array.from(rects)) {
+              if (rect.parentNode) {
+                rect.parentNode.removeChild(rect);
+                break; // Solo eliminamos el primer rect que encontremos
+              }
+            }
+            // Serializar el SVG final
+            newSvgString = new XMLSerializer().serializeToString(svgContent);
+          } else {
+            // Cuando no hay logo, añadimos el fondo
+            newSvgString = `
+              <svg ${svgString.split('<svg')[1]}
+                xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="${bgColor}" />
+                ${svgString.split('>').slice(1).join('>')
+                  .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
+                  .replace(/style="[^"]*background[^;]*[;" ]?/g, '')}
+              </svg>
+            `;
+          }
 
           // Crear y descargar el archivo
           const svgBlob = new Blob([newSvgString], { type: 'image/svg+xml' });
@@ -1303,7 +1334,7 @@ function AppModern() {
               <div className="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                 <div className="w-full">
                   <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white mb-4">
-                    Recortar imagenaaaaa
+                    Recortar imagen
                   </h3>
                   <div className="mt-2">
                     <ImageCropper 
