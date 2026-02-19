@@ -329,42 +329,17 @@ function AppModern() {
           }
 
           // Crear un nuevo SVG con los colores correctos
-          let newSvgString: string;
-          if (qrAppearance.logoDataUrl) {
-            // Primero creamos el SVG con los colores y estilos
-            let tempSvgString = `
-              <svg ${svgString.split('<svg')[1]}
-                xmlns="http://www.w3.org/2000/svg">
-                ${svgString.split('>').slice(1).join('>')
-                  .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
-                  .replace(/style="[^"]*background[^;]*[;" ]?/g, '')}
-              </svg>
-            `;
-            // Ahora procesamos el SVG generado para quitar el rect de fondo
-            const tempDoc = new DOMParser().parseFromString(tempSvgString, 'image/svg+xml');
-            const svgContent = tempDoc.documentElement;
-            // Buscar y eliminar cualquier rect que sea el fondo (el primero que encontremos)
-            const rects = svgContent.querySelectorAll('rect');
-            for (const rect of Array.from(rects)) {
-              if (rect.parentNode) {
-                rect.parentNode.removeChild(rect);
-                break; // Solo eliminamos el primer rect que encontremos
-              }
-            }
-            // Serializar el SVG final
-            newSvgString = new XMLSerializer().serializeToString(svgContent);
-          } else {
-            // Cuando no hay logo, añadimos el fondo
-            newSvgString = `
-              <svg ${svgString.split('<svg')[1]}
-                xmlns="http://www.w3.org/2000/svg">
-                <rect width="100%" height="100%" fill="${bgColor}" />
-                ${svgString.split('>').slice(1).join('>')
-                  .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
-                  .replace(/style="[^"]*background[^;]*[;" ]?/g, '')}
-              </svg>
-            `;
-          }
+                    const newSvgString = `
+                      <svg ${svgString.split('<svg')[1]}
+                        xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="100%" fill="${bgColor}" />
+                        ${svgString.split('>').slice(1).join('>')
+                          // Reemplazar solo los fills que no sean transparentes
+                          .replace(/fill="(?!none|transparent)[^"]*"/g, `fill="${fgColor}"`)
+                          // Eliminar cualquier estilo de fondo que pueda estar en el SVG original
+                          .replace(/style="[^"]*background[^;]*[;"]?/g, '')}
+                      </svg>
+                    `;
 
           // Crear y descargar el archivo
           const svgBlob = new Blob([newSvgString], { type: 'image/svg+xml' });
@@ -1321,7 +1296,6 @@ function AppModern() {
           </div>
         </div>
       </div>
-
 
       {/* Image Cropper Modal */}
       {cropModalOpen && imageForCrop && (
